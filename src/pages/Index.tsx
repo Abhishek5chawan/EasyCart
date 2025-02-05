@@ -1,8 +1,9 @@
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Greeting } from "@/components/Greeting";
 import { ProductCard } from "@/components/ProductCard";
 import { Cart } from "@/components/Cart";
+import { mockProducts } from "@/data/mockProducts";
 
 interface Product {
   id: string;
@@ -17,28 +18,7 @@ interface CartItem extends Product {
 }
 
 const Index = () => {
-  const [products, setProducts] = useState<Product[]>([]);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch(
-          "https://freeapi.hashnode.space/api-guide/apireference/getAllProducts"
-        );
-        if (!response.ok) throw new Error("Failed to fetch products");
-        const data = await response.json();
-        setProducts(data.slice(0, 12)); // Limit to 12 products for demo
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, []);
 
   const handleAddToCart = (product: Product) => {
     setCartItems((prev) => {
@@ -81,26 +61,15 @@ const Index = () => {
         </header>
 
         <main>
-          {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {[...Array(8)].map((_, i) => (
-                <div
-                  key={i}
-                  className="animate-pulse bg-white rounded-lg h-[400px]"
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {products.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  onAddToCart={handleAddToCart}
-                />
-              ))}
-            </div>
-          )}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {mockProducts.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                onAddToCart={handleAddToCart}
+              />
+            ))}
+          </div>
         </main>
       </div>
     </div>
