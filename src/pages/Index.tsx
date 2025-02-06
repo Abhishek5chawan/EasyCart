@@ -29,7 +29,10 @@ const Index = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch("https://fakestoreapi.com/products");
+        // fakeapi
+        //const response = await fetch("https://fakestoreapi.com/products");
+        //freeapi
+        const response = await fetch("https://api.freeapi.app/api/v1/public/randomproducts?page=1&limit=10");
         if (!response.ok) {
           throw new Error("Failed to fetch products");
         }
