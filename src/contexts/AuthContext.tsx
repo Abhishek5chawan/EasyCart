@@ -1,72 +1,49 @@
 
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { User } from "@supabase/supabase-js";
-import { supabase } from "@/integrations/supabase/client";
+import { createContext, useContext, ReactNode } from "react";
+import { useUser, useAuth as useClerkAuth, SignIn, SignUp } from "@clerk/clerk-react";
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  user: User | null;
-  login: (email: string, password: string) => Promise<{ error: any }>;
+  user: any;
+  login: () => Promise<void>;
   loginWithGoogle: () => Promise<void>;
-  signup: (email: string, password: string) => Promise<{ error: any }>;
+  signup: () => Promise<void>;
   logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
+  const { isSignedIn, user } = useUser();
+  const { signOut } = useClerkAuth();
 
-  useEffect(() => {
-    // Check active sessions and sets the user
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setIsAuthenticated(!!session);
-      setUser(session?.user ?? null);
-    });
-
-    // Listen for changes on auth state
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setIsAuthenticated(!!session);
-      setUser(session?.user ?? null);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  const login = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    return { error };
+  const login = async () => {
+    // Handled by Clerk UI Components
   };
 
   const loginWithGoogle = async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: window.location.origin,
-      },
-    });
+    // Handled by Clerk UI Components
   };
 
-  const signup = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-    });
-    return { error };
+  const signup = async () => {
+    // Handled by Clerk UI Components
   };
 
   const logout = async () => {
-    await supabase.auth.signOut();
+    await signOut();
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, login, loginWithGoogle, signup, logout }}>
+    <AuthContext.Provider 
+      value={{ 
+        isAuthenticated: !!isSignedIn, 
+        user, 
+        login, 
+        loginWithGoogle, 
+        signup, 
+        logout 
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

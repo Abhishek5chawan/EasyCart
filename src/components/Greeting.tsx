@@ -1,16 +1,9 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
-
-interface Profile {
-  full_name: string | null;
-  username: string | null;
-}
 
 export const Greeting = () => {
   const [greeting, setGreeting] = useState("");
-  const [profile, setProfile] = useState<Profile | null>(null);
   const { user } = useAuth();
 
   useEffect(() => {
@@ -30,23 +23,7 @@ export const Greeting = () => {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      if (user) {
-        const { data } = await supabase
-          .from('profiles')
-          .select('full_name, username')
-          .eq('id', user.id)
-          .single();
-        
-        setProfile(data);
-      }
-    };
-
-    fetchProfile();
-  }, [user]);
-
-  const displayName = profile?.full_name || profile?.username || user?.email?.split('@')[0] || "Guest";
+  const displayName = user?.firstName || user?.username || user?.emailAddresses?.[0]?.emailAddress?.split('@')[0] || "Guest";
 
   return (
     <div className="fade-in">
