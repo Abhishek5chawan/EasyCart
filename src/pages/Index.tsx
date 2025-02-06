@@ -27,34 +27,40 @@ const Index = () => {
   const { toast } = useToast(); // ✅ Ensure useToast is correctly used
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        // fakeapi
-        //const response = await fetch("https://fakestoreapi.com/products");
-        //freeapi
-        const response = await fetch("https://api.freeapi.app/api/v1/public/randomproducts?page=1&limit=10");
-        if (!response.ok) {
-          throw new Error("Failed to fetch products");
-        }
-        const data = await response.json();
-        const formattedData = data.map((item: any) => ({
-          id: String(item.id),
-          title: item.title,
-          price: parseFloat(item.price),
-          image: item.image,
-          description: item.description,
-          category: item.category,
-        }));
-        setProducts(formattedData);
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch("https://api.freeapi.app/api/v1/public/randomproducts?page=1&limit=10");
+      if (!response.ok) {
+        throw new Error("Failed to fetch products");
       }
-    };
+      const result = await response.json();
+      
+      
+      if (!result.success || !result.data || !Array.isArray(result.data.data)) {
+        throw new Error("Invalid API response format");
+      }
 
-    fetchProducts();
-  }, []);
+      
+      const formattedData = result.data.data.map((item: any) => ({
+        id: String(item.id),
+        title: item.title,
+        price: parseFloat(item.price),
+        image: item.thumbnail, 
+        description: item.description,
+        category: item.category,
+      }));
+
+      setProducts(formattedData);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchProducts();
+}, []);
+
 
   const handleAddToCart = (product: Product) => {
     setCartItems((prev) => {
