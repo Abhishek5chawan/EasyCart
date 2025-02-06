@@ -1,10 +1,9 @@
-
 import { useEffect, useState } from "react";
-import { useAuth } from "@/contexts/AuthContext";
+import { useUser } from "@clerk/clerk-react";
 
 export const Greeting = () => {
   const [greeting, setGreeting] = useState("");
-  const { user } = useAuth();
+  const { user } = useUser();
 
   useEffect(() => {
     const updateGreeting = () => {
@@ -23,13 +22,14 @@ export const Greeting = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const displayName = user?.firstName || user?.username || user?.emailAddresses?.[0]?.emailAddress?.split('@')[0] || "Guest";
+  const displayName = user?.firstName || user?.username || (user?.primaryEmailAddress ? user.primaryEmailAddress : "Guest");
+
 
   return (
     <div className="fade-in">
       <h1 className="text-4xl font-bold tracking-tight">
         <span className="text-muted-foreground">{greeting},</span>{" "}
-        <span>{displayName}</span>
+        <span>{displayName as any}</span>
       </h1>
       <p className="mt-2 text-lg text-muted-foreground">
         Welcome back to your personal shopping experience.

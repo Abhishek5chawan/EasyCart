@@ -1,5 +1,5 @@
-
 import { useState } from "react";
+import { SignedIn, SignedOut } from "@clerk/clerk-react";
 import { Greeting } from "@/components/Greeting";
 import { ProductCard } from "@/components/ProductCard";
 import { Cart } from "@/components/Cart";
@@ -49,30 +49,39 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 px-4 py-8">
-      <div className="container max-w-7xl mx-auto">
-        <header className="flex justify-between items-center mb-12">
-          <Greeting />
-          <Cart
-            items={cartItems}
-            onRemoveItem={handleRemoveFromCart}
-            onUpdateQuantity={handleUpdateQuantity}
-          />
-        </header>
-
-        <main>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {mockProducts.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                onAddToCart={handleAddToCart}
+    <>
+      <SignedIn>
+        <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 px-4 py-8">
+          <div className="container max-w-7xl mx-auto">
+            <header className="flex justify-between items-center mb-12">
+              <Greeting />
+              <Cart
+                items={cartItems}
+                onRemoveItem={handleRemoveFromCart}
+                onUpdateQuantity={handleUpdateQuantity}
               />
-            ))}
+            </header>
+
+            <main>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {mockProducts.map((product) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    onAddToCart={handleAddToCart}
+                  />
+                ))}
+              </div>
+            </main>
           </div>
-        </main>
-      </div>
-    </div>
+        </div>
+      </SignedIn>
+      <SignedOut>
+        <div className="flex justify-center items-center min-h-screen">
+          <p className="text-xl font-semibold">Please sign in to view this page.</p>
+        </div>
+      </SignedOut>
+    </>
   );
 };
 
