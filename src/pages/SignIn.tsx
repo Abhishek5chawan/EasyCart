@@ -6,21 +6,29 @@ import { Label } from "@/components/ui/label";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would typically handle the signin logic
-    // For now, just show a message
-    toast({
-      title: "Sign in functionality coming soon",
-      description: "Please check back later!",
-    });
+    
+    if (email && password) {
+      // Simple validation for demo purposes
+      login();
+      navigate("/");
+    } else {
+      toast({
+        title: "Error",
+        description: "Please fill in all fields",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -59,14 +67,6 @@ const SignIn = () => {
           <CardFooter className="flex flex-col space-y-4">
             <Button type="submit" className="w-full">
               Sign in
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              className="w-full"
-              onClick={() => navigate("/signup")}
-            >
-              Create account instead
             </Button>
           </CardFooter>
         </form>
