@@ -29,7 +29,7 @@ export const Greeting = () => {
     <div className="fade-in">
       <h1 className="text-4xl font-bold tracking-tight">
         <span className="text-muted-foreground">{greeting},</span>{" "}
-        <span>{displayName as any}</span>
+        <span>{displayName as string}</span>
       </h1>
       <p className="mt-2 text-lg text-muted-foreground">
         Welcome back to your personal shopping experience.

@@ -2,7 +2,7 @@ import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-reac
 
 export default function App() {
   return (
-    <header>
+    <header style={{ backgroundColor: 'grey', padding: '10px', display: 'flex', justifyContent: 'flex-end' }}>
       <SignedOut>
         <SignInButton />
       </SignedOut>
